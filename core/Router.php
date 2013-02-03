@@ -1,50 +1,42 @@
 <?php
-
-class Router
-{
-	private $route;
-	private $controller = 'home';
-	private $method     = 'index';
-	var $obj;
-	public function __construct()
-	{
-		if(isset($_SERVER['PATH_INFO']))
-		{
-			$this->route = $_SERVER['PATH_INFO'];
-		}
-		$infos = explode('/', $this->route);
-		
-		if(isset($infos[1]))
-			$this->controller = $infos[1];
-		if(isset($infos[2]))
-			$this->method     = $infos[2];
-	}
-	public function init_controller()
-	{
-		$file = APP.'controllers'.DS.$this->controller.'Controller.php';
-		if(file_exists($file))
-		{
-			require $file;
-			$class = $this->controller.'Controller';
-			$this->obj = new $class;
-		}
-		else
-		{
-			exit('ERROR 404 : The file '. $file . ' doesn\'t exists !');
-		}
-	}
-	public function load()
-	{
-		$this->init_controller();
-		$method = $this->method;
-		$obj =& $this->obj;
-		if(method_exists($obj, $method))
-		{
-			return $obj->$method();
-		}
-		else
-		{	
-			exit('ERROR 404 : The method '. $method . ' doesn\'t exists !');
-		}
-	}
+class Router{
+    private $url,
+            $controller,
+            $infos,
+            $obj,
+            $method;
+    
+    public function __construct(){
+        if(isset($_SERVER['PATH_INFO']))
+            $this->url = $_SERVER['PATH_INFO'];
+        $this->infos = explode('/', $this->url);
+        
+        $this->controller = isset($infos[1]) ? $infos[1] : 'home';
+        $this->method     = isset($infos[2]) ? $infos[2] : 'index';
+    }
+    public function init_controller(){
+        $file = APP.'controllers/'.$this->controller.'Controller'.EXT;
+        $obj = $this->controller.'Controller';
+        if(isset($file))
+        {
+            require $file;
+            $this->obj = new $obj;
+        }
+        else
+        {
+            include APP.'views/404.php';
+        }
+    }
+    public function load(){
+        $this->init_controller();
+        $method = $this->method;
+        if(method_exists($this->obj, $method)){
+            $p = $this->infos;
+            unset($p[0]); unset($p[1]); unset($p[2]);
+            call_user_func_array(array($this->obj, $method), $p);
+        }
+        else{
+            include APP.'views/404.php';
+        }
+    }
 }

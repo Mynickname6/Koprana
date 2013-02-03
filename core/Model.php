@@ -1,19 +1,12 @@
 <?php
 
-class Model
-{
-	protected $db = null;
-	protected function __construct()
-	{
-		$this->db = new PDO(Application::$config['database']['type'].
-		':host='.Application::$config['database']['host'].
-		';dbname='.Application::$config['database']['name'], 
-		Application::$config['database']['user'], 
-		Application::$config['database']['pass']);
-	}
-	public function count($table)
-	{
-		$q =  $this->db->query('SELECT COUNT(*) FROM '.$table);
-		return $q->fetchColumn();
-	}
+class Model{
+    protected $db;
+    
+    public function __construct(){
+        $connectionString = App::$config['database']['type'];
+        $connectionString .= ':host='.App::$config['database']['host'];
+        $connectionString .= ';dbname='.App::$con['database']['name'];
+        $this->db = new PDO($connectionString, App::$config['database']['user'], App::$config['database']['pass']);
+    }
 }

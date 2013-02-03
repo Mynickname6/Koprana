@@ -1,31 +1,22 @@
 <?php
 
-class Controller
-{
-	protected function loadView($file, $data = array())
-	{
-		extract($data);
-		include APP.'views'.DS.$file.'.php';
-	}
-	protected function loadModel($file)
-	{
-		$path = APP.'models'.DS.$file.'.php';
-		if(file_exists($path))
-		{
-			include $path;
-		}
-		return new $file;
-	}	
-	
-	protected function redirect($to)
-	{
-		$url = Application::$config['base_url'] . $to;
-		header('location: '.$url);
-	}
-	protected function get_url($to)
-	{
-		$url = Application::$config['base_url'] . $to;
-		return $url;
-	}
-
+class Controller{
+    public function url($to){
+        $url = App::$config['base_url'] . $to;
+        return $url;
+     }
+     public function redirect($to){
+      $url = App::$config['base_url'] . $to;
+        header('location: '.$url);
+     }
+     public function loadModel($name, $newname = null){
+            $location = APP.'models/'.$name.EXT;
+            require $location;
+            $objname = $newname == null ? $name : $newname;
+            $this->$objname = new $name;
+     }
+     public function loadView($name, $data = array()){
+        extract($data);
+        require APP.'views/'.$name.EXT;
+     }
 }
