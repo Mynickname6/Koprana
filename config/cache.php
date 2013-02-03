@@ -1,6 +1,5 @@
 <?php
 #Toutes les valeurs sont en secondes
-#All the values are in seconds
 return array(
 	'ladder_perso' => 3600,
 	'ladder_guildes' => 3600,
