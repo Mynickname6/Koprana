@@ -1,6 +1,6 @@
 <?php
 class Router{
-    private $url = '',
+    private $url,
             $controller,
             $infos,
             $obj,
@@ -24,15 +24,7 @@ class Router{
         }
         else
         {
-            $view = APP.'views/404.php';
-            if(isset($view))
-            {
-                include $view;
-            }
-            else
-            {
-                exit();
-            }
+			include APP.'views/404.php';
         }
     }
     public function load(){
